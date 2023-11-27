@@ -73,3 +73,23 @@ body {
     border: 2px dashed #4caf50;
   }
   
+
+  .right-sidebar {
+    width: 25%;
+    background-color: #eee;
+    padding: 20px;
+  }
+  
+  .right-sidebar h2 {
+    margin-bottom: 10px;
+  }
+  
+  #activity-log {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  #activity-log li {
+    margin-bottom: 10px;
+  }
+  

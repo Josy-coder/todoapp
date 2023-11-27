@@ -1,45 +1,56 @@
 document.addEventListener('DOMContentLoaded', () => {
     const taskList = document.getElementById('tasks');
     const taskForm = document.getElementById('task-form');
+    const activityLog = document.getElementById('activity-log');
     let currentTab = 'not-started';
-  
+
     // Load tasks from local storage
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-  
+
     // Render tasks
     renderTasks();
-  
+
+    // Function to log activity
+    function logActivity(action, taskName) {
+        const timestamp = new Date().toLocaleString();
+        const activity = `${action} task "${taskName}" at ${timestamp}`;
+        const activityItem = document.createElement('li');
+        activityItem.textContent = activity;
+        activityLog.appendChild(activityItem);
+
+        //TODO: to include change to deadline, to subtasks and to status from "Not Started" to "Started" or From "Started" to "Complete"
+    }
+
     // Function to render tasks
     function renderTasks() {
-      taskList.innerHTML = '';
-      tasks.forEach((task, index) => {
-        if (
-          (currentTab === 'not-started' && task.status === 'Not Started') ||
-          (currentTab === 'started' && task.status === 'Started') ||
-          (currentTab === 'completed' && task.status === 'Completed')
-        ) {
-          const listItem = document.createElement('li');
-          listItem.innerHTML = `
-            <span class="task-name" contenteditable="true" onblur="editTaskName(${index})">${task.name}</span>
-            <span class="subtasks">${task.subtasks ? `(${task.subtasks} subtasks)` : ''}</span>
-            <span class="priority">Priority: ${task.priority}</span>
-            <span class="deadline">Deadline: ${task.deadline || 'Not set'}</span>
-            <span class="status">Status: ${task.status}</span>
-            <button class="complete-btn" onclick="toggleTaskStatus(${index})">${
-              task.status === 'Not Started' ? 'Start' : 'Complete'
-            }</button>
-            <button class="delete-btn" onclick="deleteTask(${index})">Delete</button>
-          `;
-          listItem.draggable = true;
-          listItem.addEventListener('dragstart', (e) => handleDragStart(e, index));
-          listItem.addEventListener('dragover', (e) => handleDragOver(e));
-          listItem.addEventListener('drop', (e) => handleDrop(e, index));
-          taskList.appendChild(listItem);
-        }
-      });
-      updateLocalStorage();
+        taskList.innerHTML = '';
+        tasks.forEach((task, index) => {
+            if (
+                (currentTab === 'not-started' && task.status === 'Not Started') ||
+                (currentTab === 'started' && task.status === 'Started') ||
+                (currentTab === 'completed' && task.status === 'Completed')
+            ) {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <span class="task-name" contenteditable="true" onblur="editTaskName(${index})">${task.name}</span>
+                    <span class="subtasks">${task.subtasks ? `(${task.subtasks} subtasks)` : ''}</span>
+                    <span class="priority">Priority: ${task.priority}</span>
+                    <span class="deadline">Deadline: ${task.deadline || 'Not set'}</span>
+                    <span class="status">Status: ${task.status}</span>
+                    <button class="complete-btn" onclick="toggleTaskStatus(${index})">${
+                    task.status === 'Not Started' ? 'Start' : 'Complete'
+                    }</button>
+                    <button class="delete-btn" onclick="deleteTask(${index})">Delete</button>
+                `;
+                listItem.draggable = true;
+                listItem.addEventListener('dragstart', (e) => handleDragStart(e, index));
+                listItem.addEventListener('dragover', (e) => handleDragOver(e));
+                listItem.addEventListener('drop', (e) => handleDrop(e, index));
+                taskList.appendChild(listItem);
+            }
+        });
+        updateLocalStorage();
     }
-  
     // Function to add a new task
     window.addTask = function () {
       const newTaskName = document.getElementById('task-name').value.trim();
@@ -52,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
           status: 'Not Started',
         };
         tasks.push(newTask);
+        logActivity('Created', newTask.name);
         renderTasks();
         taskForm.reset();
       }
@@ -61,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.editTaskName = function (index) {
       const editedName = document.getElementsByClassName('task-name')[index].innerText.trim();
       tasks[index].name = editedName;
+      logActivity('Changed Name', editedName);
       renderTasks();
     };
   
