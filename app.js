@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const loader = document.querySelector('.loader');
     const taskList = document.getElementById('tasks');
     const taskForm = document.getElementById('task-form');
     const activityLog = document.getElementById('activity-log');
@@ -7,8 +8,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load tasks from local storage
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
-    // Render tasks
-    renderTasks();
+    // Show loader on page load
+    loader.style.display = 'block';
+
+    // Simulate a delay for 5 seconds on page load
+    setTimeout(() => {
+        loader.style.display = 'none'; // Hide the loader after 5 seconds
+        renderTasks(); // Render tasks after hiding the loader
+    }, 5000);
 
     // Function to log activity
     function logActivity(action, taskName) {
@@ -17,8 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const activityItem = document.createElement('li');
         activityItem.textContent = activity;
         activityLog.appendChild(activityItem);
-
-        //TODO: to include change to deadline, to subtasks and to status from "Not Started" to "Started" or From "Started" to "Complete"
+        // TODO: Include changes to deadline, subtasks, and status
     }
 
     // Function to render tasks
@@ -38,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="deadline">Deadline: ${task.deadline || 'Not set'}</span>
                     <span class="status">Status: ${task.status}</span>
                     <button class="complete-btn" onclick="toggleTaskStatus(${index})">${
-                    task.status === 'Not Started' ? 'Start' : 'Complete'
+                        task.status === 'Not Started' ? 'Start' : 'Complete'
                     }</button>
                     <button class="delete-btn" onclick="deleteTask(${index})">Delete</button>
                 `;
@@ -51,84 +57,90 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         updateLocalStorage();
     }
+
     // Function to add a new task
     window.addTask = function () {
-      const newTaskName = document.getElementById('task-name').value.trim();
-      if (newTaskName) {
-        const newTask = {
-          name: newTaskName,
-          subtasks: document.getElementById('subtasks').value.trim(),
-          priority: document.getElementById('priority').value,
-          deadline: document.getElementById('deadline').value,
-          status: 'Not Started',
-        };
-        tasks.push(newTask);
-        logActivity('Created', newTask.name);
-        renderTasks();
-        taskForm.reset();
-      }
+        const newTaskName = document.getElementById('task-name').value.trim();
+        if (newTaskName) {
+            const newTask = {
+                name: newTaskName,
+                subtasks: document.getElementById('subtasks').value.trim(),
+                priority: document.getElementById('priority').value,
+                deadline: document.getElementById('deadline').value,
+                status: 'Not Started',
+            };
+            tasks.push(newTask);
+            logActivity('Created', newTask.name);
+            renderTasks();
+            taskForm.reset();
+        }
     };
-  
+
     // Function to edit a task name
     window.editTaskName = function (index) {
-      const editedName = document.getElementsByClassName('task-name')[index].innerText.trim();
-      tasks[index].name = editedName;
-      logActivity('Changed Name', editedName);
-      renderTasks();
+        const editedName = document.getElementsByClassName('task-name')[index].innerText.trim();
+        tasks[index].name = editedName;
+        logActivity('Changed Name', editedName);
+        renderTasks();
     };
-  
+
     // Function to toggle task status (Start/Complete)
     window.toggleTaskStatus = function (index) {
-      const task = tasks[index];
-      task.status = task.status === 'Not Started' ? 'Started' : 'Completed';
-      renderTasks();
+        const task = tasks[index];
+        task.status = task.status === 'Not Started' ? 'Started' : 'Completed';
+        renderTasks();
     };
-  
+
     // Function to delete a task
     window.deleteTask = function (index) {
-      if (confirm(`Are you sure you want to delete "${tasks[index].name}"?`)) {
-        tasks.splice(index, 1);
-        renderTasks();
-      }
+        if (confirm(`Are you sure you want to delete "${tasks[index].name}"?`)) {
+            tasks.splice(index, 1);
+            renderTasks();
+        }
     };
-  
+
     // Drag and drop functionality
     let dragIndex;
-  
+
     function handleDragStart(e, index) {
-      dragIndex = index;
-      e.dataTransfer.effectAllowed = 'move';
+        dragIndex = index;
+        e.dataTransfer.effectAllowed = 'move';
     }
-  
+
     function handleDragOver(e) {
-      e.preventDefault();
-      const draggedOverItem = e.target.closest('li');
-      if (draggedOverItem) {
-        draggedOverItem.classList.add('dragged-over');
-      }
+        e.preventDefault();
+        const draggedOverItem = e.target.closest('li');
+        if (draggedOverItem) {
+            draggedOverItem.classList.add('dragged-over');
+        }
     }
-  
+
     function handleDrop(e, dropIndex) {
-      e.preventDefault();
-      const draggedOverItem = e.target.closest('li');
-      if (draggedOverItem) {
-        draggedOverItem.classList.remove('dragged-over');
-      }
-      const draggedTask = tasks[dragIndex];
-      tasks.splice(dragIndex, 1);
-      tasks.splice(dropIndex, 0, draggedTask);
-      renderTasks();
+        e.preventDefault();
+        const draggedOverItem = e.target.closest('li');
+        if (draggedOverItem) {
+            draggedOverItem.classList.remove('dragged-over');
+        }
+        const draggedTask = tasks[dragIndex];
+        tasks.splice(dragIndex, 1);
+        tasks.splice(dropIndex, 0, draggedTask);
+        renderTasks();
     }
-  
+
     // Function to show tasks based on tab selection
     window.showTab = function (tab) {
-      currentTab = tab;
-      renderTasks();
+        loader.style.display = 'block';
+
+        // Simulate a delay for 2 seconds when switching tabs
+        setTimeout(() => {
+            loader.style.display = 'none'; // Hide the loader after 2 seconds
+            currentTab = tab;
+            renderTasks(); // Render tasks after hiding the loader
+        }, 2000);
     };
-  
+
     // Function to update local storage
     function updateLocalStorage() {
-      localStorage.setItem('tasks', JSON.stringify(tasks));
+        localStorage.setItem('tasks', JSON.stringify(tasks));
     }
-  });
-  
+});

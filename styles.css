@@ -1,65 +1,94 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Josefin Sans", sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
+}
+/* HTML: <div class="loader"></div> */
+.loader {
+    display: none; /* Initially the loader is hidden */
+    width: fit-content;
+    font-weight: bold;
+    font-family: monospace;
+    white-space: pre;
+    font-size: 30px;
+    line-height: 1.2em;
+    height:1.2em;
+    overflow: hidden;
+  }
+  .loader:before {
+    content:"Loading...\A⌰oading...\A⌰⍜ading...\A⌰⍜⏃ding...\A⌰⍜⏃⎅ing...\A⌰⍜⏃⎅⟟ng...\A⌰⍜⏃⎅⟟⋏g...\A⌰⍜⏃⎅⟟⋏☌...\A⌰⍜⏃⎅⟟⋏☌⟒..\A⌰⍜⏃⎅⟟⋏☌⟒⏁.\A⌰⍜⏃⎅⟟⋏☌⟒⏁⋔"; 
+    white-space: pre;
+    display: inline-block;
+    animation: l39 1s infinite steps(11) alternate;
   }
   
-  .container {
+  @keyframes l39 {
+    100%{transform: translateY(-100%)}
+  }
+.container {
     display: flex;
-  }
-  
-  .sidebar {
-    width: 25%;
+    flex-wrap: wrap; /* Allow items to wrap to the next line */
+}
+
+.sidebar, .main-content, .right-sidebar {
+    box-sizing: border-box; /* Include padding and border in total width/height */
+    padding: 20px;
+}
+
+.sidebar, .right-sidebar {
+    width: 100%; /* Full width on small screens */
+}
+
+.sidebar, .main-content, .right-sidebar {
+    max-width: 100%; /* Ensure elements don't exceed their maximum width */
+}
+
+.sidebar {
     background-color: #333;
     color: #fff;
-    padding: 20px;
-  }
-  
-  .sidebar h2 {
-    margin-bottom: 10px;
-  }
-  
-  form {
+    margin-bottom: 20px; /* Add some space between sections */
+}
+
+form {
     display: flex;
     flex-direction: column;
-  }
-  
-  form label,
-  form input,
-  form select {
+}
+
+form label,
+form input,
+form select {
     margin-bottom: 10px;
-  }
-  
-  .main-content {
-    width: 75%;
-    padding: 20px;
-  }
-  
-  .tabs {
+}
+
+.main-content {
+    flex: 1; /* Take remaining width in flex container */
+}
+
+.tabs {
     display: flex;
     margin-bottom: 20px;
-  }
-  
-  button {
+}
+
+button {
     padding: 10px;
     margin-right: 10px;
     background-color: #4caf50;
     color: #fff;
     border: none;
     cursor: pointer;
-  }
-  
-  button:hover {
+}
+
+button:hover {
     background-color: #45a049;
-  }
-  
-  ul {
+}
+
+ul {
     list-style-type: none;
     padding: 0;
-  }
-  
-  li {
+}
+
+li {
     background-color: #fff;
     padding: 10px;
     margin-bottom: 10px;
@@ -67,29 +96,29 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-  }
-  
-  li.dragged-over {
-    border: 2px dashed #4caf50;
-  }
-  
+}
 
-  .right-sidebar {
-    width: 25%;
+li.dragged-over {
+    border: 2px dashed #4caf50;
+}
+
+.right-sidebar {
     background-color: #eee;
-    padding: 20px;
-  }
-  
-  .right-sidebar h2 {
-    margin-bottom: 10px;
-  }
-  
-  #activity-log {
+}
+
+#activity-log {
     list-style-type: none;
     padding: 0;
-  }
-  
-  #activity-log li {
+}
+
+#activity-log li {
     margin-bottom: 10px;
-  }
-  
+}
+
+/* Media query for screens 600px and above */
+@media screen and (min-width: 600px) {
+    .sidebar, .main-content, .right-sidebar {
+        width: 33.33%; /* Three columns on larger screens */
+        margin-bottom: 0;
+    }
+}
